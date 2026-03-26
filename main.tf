@@ -94,6 +94,7 @@ data "aws_iam_policy_document" "allow_push_image" {
     sid    = "PushImage"
     effect = "Allow"
     actions = [
+      "ecr:DescribeImages",
       "ecr:BatchCheckLayerAvailability",
       "ecr:CompleteLayerUpload",
       "ecr:InitiateLayerUpload",
