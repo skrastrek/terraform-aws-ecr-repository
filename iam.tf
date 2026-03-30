@@ -2,6 +2,7 @@ data "aws_iam_policy_document" "pull_image" {
   source_policy_documents = compact([
     try(data.aws_iam_policy_document.allow_pull_image_from_aws_account[0].json, ""),
     try(data.aws_iam_policy_document.allow_pull_image_from_organization[0].json, ""),
+    try(data.aws_iam_policy_document.allow_pull_image_from_organization_path[0].json, ""),
   ])
 }
 
@@ -39,9 +40,33 @@ data "aws_iam_policy_document" "allow_pull_image_from_organization" {
     }
 
     condition {
-      test     = "StringLike"
+      test     = "StringEquals"
       variable = "aws:PrincipalOrgID"
       values   = var.resource_policy_pull_image_from_organization_ids
+    }
+  }
+}
+
+data "aws_iam_policy_document" "allow_pull_image_from_organization_path" {
+  count = length(var.resource_policy_pull_image_from_organization_paths) != 0 ? 1 : 0
+
+  statement {
+    sid    = "PullImageFromOrganizationPath"
+    effect = "Allow"
+    actions = [
+      "ecr:BatchGetImage",
+      "ecr:GetDownloadUrlForLayer",
+    ]
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    condition {
+      test     = "StringLike"
+      variable = "aws:PrincipalOrgPaths"
+      values   = var.resource_policy_pull_image_from_organization_paths
     }
   }
 }
