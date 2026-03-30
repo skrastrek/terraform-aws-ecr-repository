@@ -1,3 +1,7 @@
+locals {
+  has_pull_image_policy = length(try(jsondecode(data.aws_iam_policy_document.pull_image.json).Statement, [])) != 0
+}
+
 resource "aws_ecr_repository" "this" {
   name                 = var.name
   image_tag_mutability = var.image_tag_mutability
@@ -18,7 +22,7 @@ resource "aws_ecr_lifecycle_policy" "this" {
 }
 
 resource "aws_ecr_repository_policy" "this" {
-  count = length(jsondecode(data.aws_iam_policy_document.pull_image.json).Statement) != 0 ? 1 : 0
+  count = local.has_pull_image_policy ? 1 : 0
 
   repository = aws_ecr_repository.this.id
   policy     = data.aws_iam_policy_document.pull_image.json
