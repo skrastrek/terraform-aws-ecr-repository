@@ -46,17 +46,16 @@ data "aws_iam_policy_document" "allow_pull_image_from_organization" {
   }
 }
 
-resource "aws_iam_policy" "push_image" {
-  name        = replace("${aws_ecr_repository.this.name}-ecr-repository-push-image", "/", "-")
-  description = "Provides access to push images to ${aws_ecr_repository.this.name}."
-  policy      = module.push_image_policy_document.json
+module "pull_image_policy_document" {
+  source  = "skrastrek/iam/aws//modules/policy-document/ecr-repository-pull"
+  version = "1.2.1"
 
-  tags = var.tags
+  ecr_repository_arn = aws_ecr_repository.this.arn
 }
 
 module "push_image_policy_document" {
   source  = "skrastrek/iam/aws//modules/policy-document/ecr-repository-push"
-  version = "1.1.0"
+  version = "1.2.1"
 
   ecr_repository_arn = aws_ecr_repository.this.arn
 }
