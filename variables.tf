@@ -15,11 +15,18 @@ variable "scan_on_push" {
 }
 
 variable "resource_policy_pull_image_from_account_ids" {
-  type = list(string)
+  type    = list(string)
+  default = []
 }
 
 variable "resource_policy_pull_image_from_organization_ids" {
-  type = list(string)
+  type    = list(string)
+  default = []
+}
+
+variable "resource_policy_pull_image_from_organization_paths" {
+  type    = list(string)
+  default = []
 }
 
 variable "tags" {
