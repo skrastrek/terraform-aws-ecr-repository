@@ -6,10 +6,6 @@ variable "keep_last_images_count" {
   type = number
 }
 
-variable "image_tag_mutability" {
-  type = string
-}
-
 variable "scan_on_push" {
   type = bool
 }
